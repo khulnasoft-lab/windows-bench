@@ -1,0 +1,237 @@
+---
+version: 2.0.0
+id: 1
+description: Account Policies
+type: domain-controller
+groups:
+  - id: 1.1
+    description: Password Policy
+    checks:
+      - id: 1.1.1
+        description: Ensure 'Enforce password history' is set to '24 or more
+          password(s)' (Automated)
+        audittype: powershell
+        audit:
+          cmd:
+            DomainController: Get-ADDefaultDomainPasswordPolicy -Current LocalComputer |
+              Select -ExpandProperty PasswordHistoryCount
+            Server: Get-ADDefaultDomainPasswordPolicy -Current LocalComputer | Select
+              -ExpandProperty PasswordHistoryCount
+        tests:
+          test_items:
+            - flag: ""
+              compare:
+                op: gte
+                value: 24
+              set: true
+        remediation: >
+          To establish the recommended configuration via GP, set the
+          following UI path to 24 or more password(s):
+            Computer Configuration\Policies\Windows Settings\Security Settings\Account
+            Policies\Password Policy\Enforce password history
+        scored: true
+      - id: 1.1.2
+        description: Ensure 'Maximum password age' is set to '365 or fewer days, but not
+          0' (Automated)
+        audittype: powershell
+        audit:
+          cmd:
+            DomainController: Get-ADDefaultDomainPasswordPolicy -Current LocalComputer |
+              Select -ExpandProperty MaxPasswordAge | Select -ExpandProperty
+              TotalDays
+            Server: Get-ADDefaultDomainPasswordPolicy -Current LocalComputer | Select
+              -ExpandProperty MaxPasswordAge | Select -ExpandProperty TotalDays
+        tests:
+          bin_op: and
+          test_items:
+            - flag: ""
+              compare:
+                op: lte
+                value: 365
+              set: true
+            - flag: ""
+              compare:
+                op: noteq
+                value: 0
+              set: true
+        remediation: >
+          To establish the recommended configuration via GP, set the
+          following UI path to 365 or fewer days, but not 0:
+           Computer Configuration\Policies\Windows Settings\Security Settings\Account Policies\Password Policy\Maximum password age
+        scored: true
+      - id: 1.1.3
+        description: Ensure 'Minimum password age' is set to '1 or more day(s)' (Automated)
+        audittype: powershell
+        audit:
+          cmd:
+            DomainController: Get-ADDefaultDomainPasswordPolicy -Current LocalComputer |
+              Select -ExpandProperty MinPasswordAge | Select -ExpandProperty
+              TotalDays
+            Server: Get-ADDefaultDomainPasswordPolicy -Current LocalComputer | Select
+              -ExpandProperty MinPasswordAge | Select -ExpandProperty TotalDays
+        tests:
+          test_items:
+            - flag: ""
+              compare:
+                op: gte
+                value: 1
+              set: true
+        remediation: >
+          To establish the recommended configuration via GP, set the
+          following UI path to 1 or more day(s):
+             Computer Configuration\Policies\Windows Settings\Security Settings\Account Policies\Password Policy\Minimum password age
+        scored: true
+      - id: 1.1.4
+        description: Ensure 'Minimum password length' is set to '14 or more
+          character(s)' (Automated)
+        audittype: powershell
+        audit:
+          cmd:
+            DomainController: Get-ADDefaultDomainPasswordPolicy -Current LocalComputer |
+              Select -ExpandProperty MinPasswordLength
+            Server: Get-ADDefaultDomainPasswordPolicy -Current LocalComputer | Select
+              -ExpandProperty MinPasswordLength
+        tests:
+          test_items:
+            - flag: ""
+              compare:
+                op: gte
+                value: 14
+              set: true
+        remediation: >
+          To establish the recommended configuration via GP, set the
+          following UI path to 14 or more character(s):
+              Computer Configuration\Policies\Windows Settings\Security Settings\Account Policies\Password Policy\Minimum password length
+        scored: true
+      - id: 1.1.5
+        description: Ensure 'Password must meet complexity requirements' is set to
+          'Enabled' (Automated)
+        audittype: powershell
+        audit:
+          cmd:
+            DomainController: Get-ADDefaultDomainPasswordPolicy -Current LocalComputer |
+              Select -ExpandProperty ComplexityEnabled
+            Server: Get-ADDefaultDomainPasswordPolicy -Current LocalComputer | Select
+              -ExpandProperty ComplexityEnabled
+        tests:
+          test_items:
+            - flag: ""
+              compare:
+                op: has
+                value: "True"
+              set: true
+        remediation: >
+          To establish the recommended configuration via GP, set the
+          following UI path to 14 or more character(s):
+               Computer Configuration\Policies\Windows Settings\Security Settings\Account Policies\Password Policy\Password must meet complexity requirements
+        scored: true
+      - id: 1.1.6
+        description: Ensure 'Relax minimum password length limits' is set to 'Enabled'
+          (Automated)
+        audittype: powershell
+        audit:
+          cmd:
+            DomainController: Get-ItemProperty -Path HKLM:\System\CurrentControlSet\Control\SAM\RelaxMinimumPasswordLengthLimits
+            Server: Get-ItemProperty -Path HKLM:\System\CurrentControlSet\Control\SAM\RelaxMinimumPasswordLengthLimits
+        tests:
+          test_items:
+            - flag: ""
+              compare:
+                op: has
+                value: "True"
+              set: true
+        remediation: >
+          To establish the recommended configuration via GP, set the
+          following UI path to Enabled:
+               Computer Configuration\Policies\Windows Settings\Security Settings\Account Policies\Password Policy\Relax minimum password length limits
+        scored: true
+      - id: 1.1.7
+        description: Ensure 'Store passwords using reversible encryption' is set to
+          'Disabled'
+        audittype: powershell
+        audit:
+          cmd:
+            DomainController: Get-ADDefaultDomainPasswordPolicy -Current LocalComputer |
+              Select -ExpandProperty ReversibleEncryptionEnabled
+            Server: Get-ADDefaultDomainPasswordPolicy -Current LocalComputer | Select
+              -ExpandProperty ReversibleEncryptionEnabled
+        tests:
+          test_items:
+            - flag: ""
+              compare:
+                op: has
+                value: "False"
+              set: true
+        remediation: >
+          To establish the recommended configuration via GP, set the
+          following UI path to Disabled:
+                Computer Configuration\Policies\Windows Settings\Security Settings\Account Policies\Password Policy\Store passwords using reversible encryption
+        scored: true
+  - id: 1.2
+    description: Account Lockout Policy
+    checks:
+      - id: 1.2.1
+        description: Ensure 'Account lockout duration' is set to '15 or more minute(s)' (Automated)
+        audittype: powershell
+        audit:
+          cmd:
+            DomainController: Get-ADDefaultDomainPasswordPolicy -Current LocalComputer |
+               Select -ExpandProperty LockoutDuration | Select -ExpandProperty Minutes
+            Server: Get-ADDefaultDomainPasswordPolicy -Current LocalComputer |
+               Select -ExpandProperty LockoutDuration | Select -ExpandProperty Minutes
+        tests:
+          test_items:
+            - flag: ""
+              compare:
+                op: gte
+                value: 15
+              set: true
+        remediation: >
+          To establish the recommended configuration via GP, set the following UI path to 15 or more minute(s):
+             Computer Configuration\Policies\Windows Settings\Security Settings\Account Policies\Account Lockout Policy\Account lockout duration
+        scored: true
+      - id: 1.2.2
+        description: Ensure 'Account lockout threshold' is set to '5 or fewer invalid logon attempt(s), but not 0' (Automated)
+        audittype: powershell
+        audit:
+          cmd:
+            DomainController: Get-ADDefaultDomainPasswordPolicy -Current LocalComputer |
+               Select -ExpandProperty LockoutThreshold
+            Server: Get-ADDefaultDomainPasswordPolicy -Current LocalComputer |
+               Select -ExpandProperty LockoutThreshold
+        tests:
+          test_items:
+            - flag: ""
+              compare:
+                op: lte
+                value: 5
+              set: true
+            - flag: ""
+              compare:
+                op: noteq
+                value: 0
+              set: true
+        remediation: >
+          To establish the recommended configuration via GP, set the following UI path to 5 or fewer invalid login attempt(s), but not 0:
+              Computer Configuration\Policies\Windows Settings\Security Settings\Account Policies\Account Lockout Policy\Account lockout threshold
+        scored: true
+      - id: 1.2.4
+        description: Ensure 'Reset account lockout counter after' is set to '15 or more minute(s)' (Automated)
+        audittype: powershell
+        audit:
+          cmd:
+            DomainController: Get-ADDefaultDomainPasswordPolicy -Current LocalComputer |
+              Select -ExpandProperty LockoutObservationWindow | Select -ExpandProperty Minutes
+            Server: Get-ADDefaultDomainPasswordPolicy -Current LocalComputer |
+              Select -ExpandProperty LockoutObservationWindow | Select -ExpandProperty Minutes
+        tests:
+          test_items:
+            - flag: ""
+              compare:
+                op: gte
+                value: 15
+              set: true
+        remediation: >
+          To establish the recommended configuration via GP, set the following UI path to 15 or more minute(s):
+              Computer Configuration\Policies\Windows Settings\Security Settings\Account Policies\Account Lockout Policy\Reset account lockout counter after
+        scored: true

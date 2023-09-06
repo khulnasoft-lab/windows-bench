@@ -1,0 +1,22 @@
+---
+env:
+  - GO111MODULE=on
+builds:
+  - main: .
+    binary: windows-bench
+    goos:
+      - windows
+    goarch:
+      - amd64
+      - arm
+      - arm64
+    goarm:
+      - "6"
+      - "7"
+archives:
+  - id: compress
+    format: zip
+    name_template: "{{ .Binary }}_{{.Version}}_{{ .Os }}_{{ .Arch }}{{ if .Arm
+      }}v{{.Arm }}{{ end }}"
+    files:
+      - cfg/**/*

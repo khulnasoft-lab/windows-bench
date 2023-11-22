@@ -3,7 +3,7 @@ module github.com/khulnasoft-lab/windows-bench
 go 1.20
 
 require (
-	github.com/golang/glog v1.1.2
+	github.com/golang/glog v1.2.0
 	github.com/khulnasoft-lab/bench-common v0.4.6
 	github.com/khulnasoft-lab/go-powershell v0.0.0-20230906135802-e5b3d0dbec0f
 	github.com/spf13/cobra v1.8.0

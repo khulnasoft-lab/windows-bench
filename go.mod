@@ -7,7 +7,7 @@ require (
 	github.com/khulnasoft-lab/bench-common v0.4.6
 	github.com/khulnasoft-lab/go-powershell v0.0.0-20230906135802-e5b3d0dbec0f
 	github.com/spf13/cobra v1.8.0
-	github.com/spf13/viper v1.18.1
+	github.com/spf13/viper v1.18.2
 )
 
 require (
